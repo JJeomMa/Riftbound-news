@@ -22,6 +22,7 @@ NEWS_URL = "https://playriftbound.com/ko-kr/news/"
 BASE_URL = "https://playriftbound.com"
 SEEN_FILE = Path(__file__).resolve().parent.parent / "data" / "seen_news.json"
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
+TEST_LATEST = os.environ.get("TEST_LATEST", "false").lower() == "true"
 
 HEADERS = {
     "User-Agent": (
@@ -148,6 +149,14 @@ def main():
             file=sys.stderr,
         )
         sys.exit(1)
+
+    if TEST_LATEST:
+        # 테스트용: seen 목록/첫 실행 여부와 상관없이 가장 최신 글 1개를 강제 전송.
+        # seen 목록은 건드리지 않으므로, 실제 자동 감지 흐름에는 영향이 없습니다.
+        latest = items[0]
+        print(f"[테스트 모드] 최신 글 강제 전송: {latest['title']} ({latest['url']})")
+        post_to_discord(latest)
+        return
 
     if first_run:
         print(f"첫 실행 감지: 현재 글 {len(items)}개를 기준선으로 저장만 하고 전송은 하지 않습니다.")
