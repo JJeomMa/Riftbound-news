@@ -3,7 +3,12 @@ name: Riftbound News Watcher
 on:
   schedule:
     - cron: "*/15 * * * *"   # 15분마다 실행 (GitHub 사정상 다소 지연될 수 있음)
-  workflow_dispatch: {}       # Actions 탭에서 수동 실행 버튼
+  workflow_dispatch:          # Actions 탭에서 수동 실행 버튼
+    inputs:
+      test_latest:
+        description: "테스트: 최신 글 1개를 무조건 디스코드로 전송"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -26,6 +31,7 @@ jobs:
       - name: Check for new Riftbound news
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          TEST_LATEST: ${{ github.event.inputs.test_latest || 'false' }}
         run: python scripts/check_riftbound_news.py
 
       - name: Commit updated seen list
