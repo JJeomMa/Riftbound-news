@@ -24,6 +24,10 @@ SEEN_FILE = Path(__file__).resolve().parent.parent / "data" / "seen_news.json"
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 TEST_LATEST = os.environ.get("TEST_LATEST", "false").lower() == "true"
 
+# 임베드 위에 붙는 멘트. 원하는 문구로 자유롭게 바꾸세요.
+# 예: "@everyone 📢 리프트바운드에 새 소식이 떴어요!" 처럼 멘션도 넣을 수 있습니다.
+MESSAGE_CONTENT = "📢 리프트바운드에 새 소식이 올라왔어요!"
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -123,6 +127,7 @@ def post_to_discord(item):
 
     payload = {
         "username": "Riftbound 새 소식",
+        "content": MESSAGE_CONTENT,
         "embeds": [
             {
                 "title": title,
